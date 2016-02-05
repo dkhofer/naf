@@ -33,8 +33,8 @@
   <% content_for :javascripts do %>
     <%= javascript_include_tag("dataTablesTemplates/applications.js") %>
     <script type='text/javascript'>
-      var sAjaxSource = "<%= naf.applications_path(:json) %>";
-      var postSource = "<%= naf.historical_jobs_path(:json) %>";
+      var sAjaxSource = "<%= applications_path(:json) %>";
+      var postSource = "<%= historical_jobs_path(:json) %>";
     </script>
   <% end %>
 <% end %>

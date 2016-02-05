@@ -1,16 +1,5 @@
 module Naf
   class MachineRunnerInvocation < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :machine_runner_id,
-                    :pid,
-                    :dead_at,
-                    :wind_down_at,
-                    :commit_information,
-                    :branch_name,
-                    :repository_name,
-                    :deployment_tag,
-                    :uuid
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

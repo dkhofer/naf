@@ -56,5 +56,13 @@ module Naf
     def using_another_database?
       model_class != ActiveRecord::Base
     end
+
+    def log_path
+      configuration.log_path
+    end
+
+    def expire_cookie
+      configuration.expire_cookie
+    end
   end
 end

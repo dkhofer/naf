@@ -2,22 +2,6 @@ module Naf
   class RunningJob < NafBase
     include PgAdvisoryLocker
 
-    # Protect from mass-assignment issue
-    attr_accessible :application_id,
-                    :application_schedule_id,
-                    :application_type_id,
-                    :command,
-                    :application_run_group_restriction_id,
-                    :application_run_group_name,
-                    :application_run_group_limit,
-                    :started_on_machine_id,
-                    :pid,
-                    :request_to_terminate,
-                    :marked_dead_by_machine_id,
-                    :log_level,
-                    :started_at,
-                    :tags
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++
@@ -75,11 +59,12 @@ module Naf
         job_weights[affinity_id] = 0
       end
 
-      ::Naf::RunningJob.where(started_on_machine_id: machine.id).all.each do |running_job|
+      ::Naf::RunningJob.where(started_on_machine_id: machine.id).to_a.each do |running_job|
         affinity_ids.each do |affinity_id|
           job_weights[affinity_id] += running_job.
             historical_job.historical_job_affinity_tabs.
             where(affinity_id: affinity_id).
+            order("id ASC").
             first.try(:affinity_parameter).to_f
         end
       end
@@ -94,10 +79,10 @@ module Naf
     def add_tags(tags_to_add)
       tags_array = nil
       if self.tags.present?
-        tags_array = self.tags.gsub(/[{}]/,'').split(',')
-        new_tags = '{' + (tags_array | tags_to_add).join(',') + '}'
+        tags_array = self.tags.map { |tag| tag.gsub(/[{}]/,'') }
+        new_tags = tags_array | tags_to_add
       else
-        new_tags = '{' + tags_to_add.join(',') + '}'
+        new_tags = tags_to_add
       end
 
       self.tags = new_tags
@@ -106,10 +91,8 @@ module Naf
 
     def remove_tags(tags_to_remove)
       if self.tags.present?
-        tags_array = self.tags.gsub(/[{}]/,'').split(',')
-        new_tags = '{' + (tags_array - tags_to_remove).join(',') + '}'
-
-        self.tags = new_tags
+        tags_array = self.tags.map { |tag| tag.gsub(/[{}]/,'') }
+        self.tags = tags_array - tags_to_remove
         self.save!
       end
     end

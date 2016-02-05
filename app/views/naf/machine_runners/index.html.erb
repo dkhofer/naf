@@ -31,7 +31,7 @@
       }
       var str = window.location.pathname;
       var sub_path = str.substring(0, str.indexOf("job_system"));
-      var url = sub_path + 'job_system/machine_runner_invocations/';
+      var url = sub_path + 'machine_runner_invocations/';
       jQuery.ajax({
         url: url,
         type: 'POST',
@@ -75,7 +75,7 @@
   <% content_for :javascripts do %>
     <%= javascript_include_tag("dataTablesTemplates/machine_runners.js") %>
     <script type='text/javascript'>
-      var sAjaxSource = "<%= naf.machine_runners_path(:json) %>";
+      var sAjaxSource = "<%= machine_runners_path(:json) %>";
     </script>
   <% end %>
 

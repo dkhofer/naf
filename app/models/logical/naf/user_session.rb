@@ -26,7 +26,7 @@ module Logical
 
       # Sign the provided string using a MessageVerifier.
       def self.sign_message(message)
-        self.message_verifier.generate(message) if !message.nil?
+        self.message_verifier.generate(message) if message.present?
       end
 
       # Unsign the provided string using a MessageVerifier.
@@ -45,7 +45,9 @@ module Logical
       # Returns an ActiveSuport MessageVerifier for signing/unsigning strings seeded with the
       # applications secret token.
       def self.message_verifier
-        @@message_verifier ||= ActiveSupport::MessageVerifier.new(Rails.application.class.config.secret_token)
+        @@message_verifier ||= ActiveSupport::MessageVerifier.new(
+          Rails.application.class.config.secret_key_base
+        )
       end
 
     end

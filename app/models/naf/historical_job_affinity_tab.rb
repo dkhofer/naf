@@ -1,11 +1,5 @@
 module Naf
   class HistoricalJobAffinityTab < ::Naf::ByHistoricalJobId
-    # Protect from mass-assignment issue
-    attr_accessible :affinity_id,
-                    :historical_job_id,
-                    :historical_job,
-                    :affinity_parameter
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++
@@ -46,7 +40,8 @@ module Naf
     def job
       ::Naf::HistoricalJob.
         from_partition(id).
-        where(id: historical_job_id).first
+        where(id: historical_job_id).
+        order("id ASC").first
     end
 
     def script_type_name

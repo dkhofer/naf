@@ -1,8 +1,5 @@
 module Naf
   class AffinityClassification < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :affinity_classification_name
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

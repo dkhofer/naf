@@ -2,23 +2,6 @@ module Naf
   class ApplicationSchedule < NafBase
     include PgAdvisoryLocker
 
-    # Protect from mass-assignment issue
-    attr_accessible :application_id,
-                    :application_run_group_restriction_id,
-                    :application_run_group_name,
-                    :run_interval,
-                    :priority,
-                    :visible,
-                    :enabled,
-                    :application_run_group_limit,
-                    :application_run_group_quantum,
-                    :application_schedule_prerequisites_attributes,
-                    :enqueue_backlogs,
-                    :run_interval_style_id,
-                    :application,
-                    :run_interval_style,
-                    :application_run_group_restriction
-
     SCHEDULES_LOCK_ID = 0
 
     #---------------------

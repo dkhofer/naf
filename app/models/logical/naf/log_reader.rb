@@ -5,6 +5,7 @@ module Logical
     class LogReader
 
       DATE_REGEX = /((\d){4}-(\d){2}-(\d){2} (\d){2}:(\d){2}:(\d){2} UTC)/
+      TIMESTAMP_REGEX = /\d{8}_\d{4}/
 
       def log_files
         tree = bucket.objects.with_prefix(job_log_prefix).as_tree
@@ -59,16 +60,25 @@ module Logical
       end
 
       def runner_log_prefix
-        @runner_log_prefix ||= "#{NAF_LOG_PATH}/#{creation_time}/#{::Naf::NAF_DATABASE_HOSTNAME}/#{::Naf::NAF_DATABASE}/#{::Naf.schema_name}/runners/"
+        @runner_log_prefix ||= "#{log_prefix}/runners/"
       end
 
       def job_log_prefix
-        @job_log_prefix ||= "#{NAF_LOG_PATH}/#{creation_time}/#{::Naf::NAF_DATABASE_HOSTNAME}/#{::Naf::NAF_DATABASE}/#{::Naf.schema_name}/jobs/"
+        @job_log_prefix ||= "#{log_prefix}/jobs/"
+      end
+
+      def log_prefix
+        @log_prefix ||=
+          "#{::Naf.configuration.log_path}/" +
+          "#{creation_time}/" +
+          "#{::Naf::NAF_DATABASE_HOSTNAME}/" +
+          "#{::Naf::NAF_DATABASE}/" +
+          "#{::Naf.schema_name}"
       end
 
       def sort_files(files)
         files.sort do |x, y|
-          -Time.parse(x.scan(/\d{8}_\d{4}/).last).to_i <=> -Time.parse(y.scan(/\d{8}_\d{4}/).last).to_i
+          -Time.parse(x.scan(TIMESTAMP_REGEX).last).to_i <=> -Time.parse(y.scan(TIMESTAMP_REGEX).last).to_i
         end
       end
 

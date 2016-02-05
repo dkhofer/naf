@@ -1,15 +1,5 @@
 module Naf
   class Application < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :title,
-                    :command,
-                    :application_type_id,
-                    :log_level,
-                    :short_name,
-                    :deleted,
-                    :application_schedules,
-                    :application_schedules_attributes
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++
@@ -34,7 +24,7 @@ module Naf
                            allow_blank: true,
                            allow_nil: true,
                            format: {
-                             with: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+                             with: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/,
                              message: "short name consists of only letters/numbers/underscores, and it needs to start with a letter/underscore"
                            }
 
@@ -65,7 +55,8 @@ module Naf
         queued_between(Time.zone.now - Naf::HistoricalJob::JOB_STALE_TIME, Time.zone.now).
         where(application_id: self.id).
         group(:application_id).
-        select("application_id, MAX(id) AS id").first
+        select("application_id, MAX(id) AS id").
+        order("id ASC").first
       last_queued_job ? Naf::HistoricalJob.find(last_queued_job.id) : nil
     end
 
@@ -83,7 +74,5 @@ module Naf
       self.short_name = nil if self.short_name.blank?
       self.log_level = nil if self.log_level.blank?
     end
-
-
   end
 end

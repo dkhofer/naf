@@ -89,7 +89,7 @@
 <%= render partial: 'naf/shared/auto_resize_width', locals: { div_class: '.scrollable-output' } %>
 <%= render partial: 'naf/log_viewer/log_display',
            locals: {
-             logs_url: "#{http_protocol}#{::Logical::Naf::Machine.new(@machine_runner.machine).runner}#{naf.logs_log_parsers_path}",
+             logs_url: "#{http_protocol}#{::Logical::Naf::Machine.new(@machine_runner.machine).runner}#{logs_log_parsers_path}",
              record_id: @machine_runner.id,
              record_type: 'runner'
            } %>
@@ -105,7 +105,7 @@
       var id = <%= @machine_runner.machine_runner_invocations.last.id %>;
       var str = window.location.pathname;
       var sub_path = str.substring(0, str.indexOf("job_system"));
-      var url = sub_path + 'job_system/machine_runner_invocations/' + id;      jQuery.ajax({
+      var url = sub_path + 'machine_runner_invocations/' + id;      jQuery.ajax({
         url: url,
         type: 'POST',
         dataType: 'json',

@@ -1,9 +1,5 @@
 module Naf
   class ApplicationSchedulePrerequisite < ::Naf::NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :application_schedule_id,
-                    :prerequisite_application_schedule_id
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

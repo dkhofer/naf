@@ -94,7 +94,7 @@
     function callAjax(){
       jQuery.ajax({
         url: logs_url,
-        dataType: 'jsonp',
+        dataType: 'json',
         jsonpCallback: 'convertToJsonCallback',
         xhrFields: {
           withCredentials: true
@@ -122,7 +122,7 @@
                             search_date_to_minute]
               },
         success: function(response) {
-          logs = response['logs'];
+          logs = response.data.logs;
           updateVariables(response);
 
           if(search_command == true){
@@ -167,7 +167,7 @@
         error: function(response) {
           message = '<span><pre style="display: inline; word-wrap: break-word;">Failed to retrieve ' + '<%= record_type %>' + '(' +
             '<%= record_id %>' + ') logs from ' + '<%= logs_url %>'.match(/^https?\:\/\/([^\/?#]+)/).pop() + '. Please refer to ' +
-            'Naf FAQs on the' + ' wiki'.link('https://github.com/fiksu/naf/wiki/Frequently-Asked-Questions') +
+            'Naf FAQs on the' + ' wiki'.link('https://github.com/jebbit/naf/wiki/Frequently-Asked-Questions') +
             ' for further information.</pre><br></span>';
 
           jQuery('#stdout').prepend(message);

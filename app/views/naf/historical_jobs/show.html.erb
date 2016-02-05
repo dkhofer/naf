@@ -140,7 +140,7 @@
         <% elsif !['Terminating'].include?(@logical_job.status) -%>
           <tr>
             <td>Enqueue Application</td>
-            <td><% params = { class: "re-enqueue", content: "#{naf.historical_jobs_path}/reenqueue", id: @historical_job.id } %>
+            <td><% params = { class: "re-enqueue", content: "#{historical_jobs_path}/reenqueue", id: @historical_job.id } %>
               <% if @historical_job.application_id.present? -%>
                 <% params[:app_id] = @historical_job.application.id %>
               <% end %>
@@ -190,7 +190,7 @@
 <%= render partial: 'naf/log_viewer/log_display',
            locals: { record_id: @historical_job.id,
                      status: @logical_job.status,
-                     logs_url: "#{http_protocol}#{@logical_job.runner}#{naf.logs_log_parsers_path}",
+                     logs_url: "#{http_protocol}#{@logical_job.runner}#{logs_log_parsers_path}",
                      record_type: 'job' } %>
 
 <!-- This partial controls terminate and re-enqueue links -->

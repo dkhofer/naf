@@ -1,10 +1,5 @@
 module Naf
   class LoggerStyle < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :name,
-                    :note,
-                    :logger_style_names_attributes
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

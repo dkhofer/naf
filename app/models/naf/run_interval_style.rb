@@ -1,8 +1,5 @@
 module Naf
   class RunIntervalStyle < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :name
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

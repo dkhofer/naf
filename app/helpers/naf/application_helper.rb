@@ -40,9 +40,9 @@ module Naf
 
     def naf_last_queued_at_link(app)
       if historical_job = app.last_queued_job
-        link_to "#{time_ago_in_words(historical_job.created_at, true)} ago, " +
+        link_to "#{time_ago_in_words(historical_job.created_at)} ago, " +
           "#{historical_job.created_at.localtime.strftime("%Y-%m-%d %r")}",
-          naf.historical_job_path(historical_job)
+          historical_job_path(historical_job)
       else
         ""
       end
@@ -112,13 +112,13 @@ module Naf
     end
 
     def naf_table_title
-      if current_page?(naf.janitorial_archive_assignments_path)
+      if current_page?(janitorial_archive_assignments_path)
         "Janitorial Archive Assignment"
-      elsif current_page?(naf.janitorial_create_assignments_path)
+      elsif current_page?(janitorial_create_assignments_path)
         "Janitorial Create Assignment"
-      elsif current_page?(naf.janitorial_drop_assignments_path)
+      elsif current_page?(janitorial_drop_assignments_path)
         "Janitorial Drop Assignment"
-      elsif current_page?(main_app.naf_path)
+      elsif current_page?(historical_jobs_path)
         "Jobs"
       else
         case controller_name
@@ -162,21 +162,21 @@ module Naf
     def naf_generate_index_link(name)
       case name
         when "historical_jobs"
-          link_to "Jobs", main_app.naf_path
+          link_to "Jobs", historical_jobs_path
         when "loggers"
-          link_to "Loggers", naf.logger_styles_path
+          link_to "Loggers", logger_styles_path
         when "runners"
-          link_to "Runners", naf.machine_runners_path
+          link_to "Runners", machine_runners_path
         when "scripts"
-          link_to "Applications", naf.applications_path
+          link_to "Applications", applications_path
         when "janitorial_assignments"
-          link_to "Janitorial Assignments", naf.janitorial_archive_assignments_path
+          link_to "Janitorial Assignments", janitorial_archive_assignments_path
         when "janitorial_archive_assignments"
-          link_to "Janitorial Archive Assignments", naf.janitorial_archive_assignments_path
+          link_to "Janitorial Archive Assignments", janitorial_archive_assignments_path
         when "janitorial_create_assignments"
-          link_to "Janitorial Create Assignments", naf.janitorial_create_assignments_path
+          link_to "Janitorial Create Assignments", janitorial_create_assignments_path
         when "janitorial_drop_assignments"
-          link_to "Janitorial Drop Assignments", naf.janitorial_drop_assignments_path
+          link_to "Janitorial Drop Assignments", janitorial_drop_assignments_path
         else
           link_to name.split('_').map(&:capitalize).join(' '), { controller: name, action: 'index'}
       end
@@ -187,14 +187,14 @@ module Naf
         NAF_CREATE_BLOCKED_RESOURCES.include?(controller_name)
 
       return link_to "Add a Job",
-        naf.new_historical_job_path,
+        new_historical_job_path,
         { class: 'add_job' } if naf_display_job_search_link?
 
       return link_to "Create new #{naf_model_name}", { controller: controller_name, action: 'new' }
     end
 
     def naf_display_job_search_link?
-      current_page?(naf.root_url) or current_page?(controller: 'historical_jobs', action: 'index')
+      current_page?(root_url) or current_page?(controller: 'historical_jobs', action: 'index')
     end
 
     def naf_model_name

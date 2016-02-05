@@ -1,10 +1,5 @@
 module Naf
   class ApplicationScheduleAffinityTab < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :application_schedule_id,
-                    :affinity_id,
-                    :affinity_parameter
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

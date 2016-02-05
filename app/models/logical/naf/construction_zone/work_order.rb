@@ -29,7 +29,7 @@ module Logical::Naf::ConstructionZone
       @priority = priority
       @affinities = if affinities.nil?
                       []
-                    elsif affinities.is_a? Array
+                    elsif affinities.respond_to? :map
                       affinities
                     else
                       [affinities]
@@ -67,12 +67,10 @@ module Logical::Naf::ConstructionZone
             affinity_id: affinity.id
           }
         elsif affinity.is_a? ::Naf::Machine
-          # affinity_for machine
           {
             affinity_id: affinity.affinity.id
           }
         elsif affinity.is_a? ::Naf::ApplicationScheduleAffinityTab
-          # affinity_for application_schedule_affinity_tab
           {
             affinity_id: affinity.affinity_id,
             affinity_parameter: affinity.affinity_parameter

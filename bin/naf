@@ -1,14 +1,23 @@
 #!/usr/bin/env ruby
 # This command will automatically be run when you run "bundle exec naf" from the root of your application.
 
-action, option = ARGV
+action, option, environment = ARGV
 if action == 'runner'
   if option == 'up'
     puts "Bringing up the runner(s)..."
-    `screen -d -m bash -c 'source /root/.bash_profile && cd /root/current && a=\`uuidgen\` &&
-      script/rails runner ::Process::Naf::Runner.run --invocation-uuid $a 2>&1 |
-      script/rails runner ::Process::Naf::Logger::RunnerLog.run --invocation-uuid $a'`
-
+    if ['staging', 'production'].include?(environment)
+      `screen -d -m bash -c 'source /root/.bash_profile &&
+        cd /root/current &&
+        a=\`uuidgen\` &&
+        bin/rails runner ::Process::Naf::Runner.run --invocation-uuid $a 2>&1 |
+        bin/rails runner ::Process::Naf::Logger::RunnerLog.run --invocation-uuid $a'`
+    elsif ['test', 'development'].include?(environment)
+      `screen -d -m bash -c 'a=\`uuidgen\` &&
+        bin/rails runner ::Process::Naf::Runner.run --invocation-uuid $a 2>&1 |
+        bin/rails runner ::Process::Naf::Logger::RunnerLog.run --invocation-uuid $a'`
+    else
+      puts "Please provide an enviroment (test, development, staging, production)"
+    end
   elsif option == 'status'
     num_runners = Integer(`ps -ef | grep Process::Naf::Runner.run | grep -v grep | grep -v uuidgen | wc -l`.strip)
     hostname = `hostname`.strip

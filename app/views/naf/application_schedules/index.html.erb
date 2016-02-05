@@ -39,7 +39,7 @@
   <% content_for :javascripts do %>
     <%= javascript_include_tag("dataTablesTemplates/application_schedules.js") %>
     <script type='text/javascript'>
-      var sAjaxSource = "<%= naf.application_schedules_path(:json) %>";
+      var sAjaxSource = "<%= application_schedules_path(:json) %>";
     </script>
   <% end %>
 <% end %>

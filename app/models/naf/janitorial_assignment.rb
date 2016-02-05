@@ -1,6 +1,5 @@
 module Naf
   class JanitorialAssignment < ::Naf::NafBase
-
     #----------------------
     # *** Class Methods ***
     #++++++++++++++++++++++

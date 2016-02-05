@@ -2,7 +2,7 @@
   <h3 id="record_name"><%= record_name %> </h3>
 </div>
 
-<% if current_page?(naf.root_url) or current_page?(action: 'index') %>
+<% if current_page?(root_url) or current_page?(action: 'index') %>
   <% if flash[:error] -%>
     <div class="error"><%= flash[:error] %></div></br>
   <% end -%>

@@ -1,11 +1,5 @@
 module Naf
   class MachineAffinitySlot < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :machine_id,
-                    :affinity_id,
-                    :required,
-                    :affinity_parameter
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

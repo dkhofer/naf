@@ -1,11 +1,5 @@
 module Naf
   class JanitorialCreateAssignment < JanitorialAssignment
-    # Protect from mass-assignment issue
-    attr_accessible :model_name,
-                    :assignment_order,
-                    :enabled,
-                    :deleted
-
     #--------------------
     # *** Validations ***
     #++++++++++++++++++++

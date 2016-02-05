@@ -13,7 +13,7 @@
     <script type='text/javascript'>
       jQuery(document).ready(function () {
         jQuery(document).delegate('.enqueue', "click", function(){
-          var postSource = "<%= naf.historical_jobs_path %>";
+          var postSource = "<%= historical_jobs_path %>";
           var answer = confirm("Adding application as a job on the queue?");
           if (!answer) {
             return false;
@@ -103,7 +103,7 @@
             <% @logical_application.application_schedules.each do |schedule|
                   logical_schedule = ::Logical::Naf::ApplicationSchedule.new(schedule)
                   output << (link_to logical_schedule.display,
-                                     naf.application_schedule_path(schedule.id),
+                                     application_schedule_path(schedule.id),
                                      title: logical_schedule.help_title)
                   output << ', '
                 end
@@ -139,7 +139,7 @@
         <% @application.historical_jobs.order('created_at desc').limit(10).each do |job| -%>
           <tr>
             <td><%= link_to job.id, historical_job_path(job) %></td>
-            <td><%= "#{time_ago_in_words(job.created_at, true)} ago" %></td>
+            <td><%= "#{time_ago_in_words(job.created_at)} ago" %></td>
             <td style="white-space: pre-wrap;"><%= job.command %></td>
             <% job = ::Logical::Naf::Job.new(job) %>
             <td class="<%= add_color(job.status) %>"><%= job.status %></td>

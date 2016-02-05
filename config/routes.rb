@@ -50,6 +50,6 @@ Naf::Engine.routes.draw do
                                           type: "Naf::JanitorialDropAssignment",
                                           except: [:destroy]
 
-  match "jobs" => "historical_jobs#index"
+  get "jobs" => "historical_jobs#index"
   root to: "historical_jobs#index"
 end

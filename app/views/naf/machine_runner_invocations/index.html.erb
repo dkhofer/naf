@@ -27,7 +27,7 @@
   <% content_for :javascripts do %>
     <%= javascript_include_tag("dataTablesTemplates/machine_runner_invocations.js") %>
     <script type='text/javascript'>
-      var sAjaxSource = "<%= naf.machine_runner_invocations_path(:json) %>";
+      var sAjaxSource = "<%= machine_runner_invocations_path(:json) %>";
     </script>
   <% end %>
 

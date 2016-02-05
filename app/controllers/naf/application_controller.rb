@@ -33,12 +33,17 @@ module Naf
 
     # Sets current search status
     def set_status
-      status = params[:search][:status]
-      if status.present?
-        @search_status = status.to_sym
+      @search_status = :all
+
+      if params[:search].present?
+        status = params[:search].fetch(:status, nil)
+        if status.present?
+          @search_status = status.to_sym
+        end
       else
-        @search_status = :all
+        params[:search] = {}
       end
+
       cookies[:search_status] = @search_status
     end
 

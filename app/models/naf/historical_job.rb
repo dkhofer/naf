@@ -13,26 +13,6 @@ module Naf
 
     include PgAdvisoryLocker
 
-    # Protect from mass-assignment issue
-    attr_accessible :application_id,
-                    :application_schedule_id,
-                    :application_type_id,
-                    :command,
-                    :application_run_group_restriction_id,
-                    :application_run_group_name,
-                    :application_run_group_limit,
-                    :priority,
-                    :started_on_machine_id,
-                    :failed_to_start,
-                    :pid,
-                    :exit_status,
-                    :termination_signal,
-                    :state,
-                    :request_to_terminate,
-                    :marked_dead_by_machine_id,
-                    :log_level,
-                    :machine_runner_invocation_id
-
     JOB_STALE_TIME = 1.week
     SYSTEM_TAGS = {
       startup: '$startup',

@@ -1,9 +1,5 @@
 module Naf
   class MachineRunner < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :machine_id,
-                    :runner_cwd
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++
