@@ -1,10 +1,10 @@
 <% content_for :body do %>
   <div id="record">
-    <%= link_to 'Back', naf.historical_jobs_path %>
+    <%= link_to 'Back', historical_jobs_path %>
 
     <h3 id="record_name">Create a Job</h3>
 
-    <%= form_tag(naf.historical_jobs_path, id: 'job_add') do %>
+    <%= form_tag(historical_jobs_path, id: 'job_add') do %>
 
         <% if defined?(@historical_job) && @historical_job.errors.any? %>
             <div id="errorExplanation">

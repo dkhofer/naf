@@ -20,7 +20,7 @@
       job[12] << (link_to image_tag('download.png',
                   class: 'action',
                   title: "Download all logs for job(id: #{job[0]}, title: #{job[4]}"),
-                  "#{http_protocol}#{runner_path_name}#{naf.download_log_parsers_path}?record_id=#{job[0]}&record_type=job")
+                  "#{http_protocol}#{runner_path_name}#{download_log_parsers_path}?record_id=#{job[0]}&record_type=job")
     end
 
     if job[10] == "Running" || job[10] == 'Queued' || job[10] == 'Waiting'
@@ -28,10 +28,10 @@
       job[12] << (link_to image_tag('terminate.png',
                   class: 'action',
                   title: "Terminate job(id: #{job[0]}, title: #{job[4]})"),
-                  "#", { class: "terminate", id: job[0]}, content: "#{naf.historical_jobs_path}")
+                  "#", { class: "terminate", id: job[0], content: "#{historical_jobs_path}"})
     elsif job[10] != 'Terminating'
       # This re-enqueue link is handled by assets/javascripts/dataTableTemplates/jobs.js
-      params = { class: "re-enqueue", id: historical_job.id, content: "#{naf.historical_jobs_path}/reenqueue"}
+      params = { class: "re-enqueue", id: historical_job.id, content: "#{historical_jobs_path}/reenqueue"}
       if historical_job.application_id.present?
         params[:app_id] = historical_job.application_id
       end

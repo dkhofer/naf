@@ -1,16 +1,5 @@
 module Naf
   class QueuedJob < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :application_id,
-                    :application_schedule_id,
-                    :application_type_id,
-                    :command,
-                    :application_run_group_restriction_id,
-                    :application_run_group_name,
-                    :application_run_group_limit,
-                    :priority,
-                    :historical_job
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

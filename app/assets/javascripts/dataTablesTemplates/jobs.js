@@ -59,7 +59,7 @@ jQuery(document).ready(function() {
       return false;
     }
     var id = jQuery(this).attr('id');
-    var url = 'job_system/historical_jobs/' + id;
+    var url = 'historical_jobs/' + id;
     jQuery.ajax({
       url: url,
       type: 'POST',
@@ -116,7 +116,7 @@ jQuery(document).ready(function() {
 
 function addLinkToJob(nRow, aData) {
   var id = aData[0];
-  var row = jQuery('<a href="job_system/historical_jobs/' + id + '">' + id + '</a>' );
+  var row = jQuery('<a href="historical_jobs/' + id + '">' + id + '</a>' );
   jQuery('td:nth-child(1)', nRow).empty().append(row);
 }
 

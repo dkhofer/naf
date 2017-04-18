@@ -1,12 +1,5 @@
 module Naf
   class Affinity < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :affinity_classification_id,
-                    :affinity_name,
-                    :selectable,
-                    :affinity_short_name,
-                    :affinity_note
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++
@@ -31,7 +24,7 @@ module Naf
                                     allow_blank: true,
                                     allow_nil: true,
                                     format: {
-                                      with: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
+                                      with: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/,
                                       message: 'letters should be first'
                                     }
 

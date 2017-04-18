@@ -6,7 +6,7 @@ cd spec/dummy
 
 # Bring in the initializer
 
-if [ $SPEC_GROUP == 'non_primary_database' ]
+if [[ $SPEC_GROUP == 'non_primary_database' ]]
 then
   echo 'Testing non primary database install'
   cp config/database-non_primary.yml config/database.yml

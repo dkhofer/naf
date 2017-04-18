@@ -42,7 +42,7 @@ module ScriptSpecHelper
         script.run
       else
         # script is an instance, run it the way Af runs it.
-        # https://github.com/fiksu/af/blob/master/lib/af/application.rb
+        # https://github.com/jebbit/af/blob/master/lib/fiksu-af/application.rb
         script._run
         script._work
       end

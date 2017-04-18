@@ -31,7 +31,7 @@ module Logical
       end
 
       def self.all(filter = false)
-        ::Naf::Machine.include_deleted(filter).all.map{ |machine| new(machine) }
+        ::Naf::Machine.include_deleted(filter).to_a.map{ |machine| new(machine) }
       end
 
       def process_pool_size
@@ -40,7 +40,7 @@ module Logical
 
       def last_checked_schedules_at
         if value = @machine.last_checked_schedules_at
-          "#{time_ago_in_words(value, true)} ago, #{value.localtime.strftime("%Y-%m-%d %r")}"
+          "#{time_ago_in_words(value)} ago, #{value.localtime.strftime("%Y-%m-%d %r")}"
         else
           ""
         end
@@ -48,7 +48,7 @@ module Logical
 
       def last_seen_alive_at
         if value = @machine.last_seen_alive_at
-          "#{time_ago_in_words(value, true)} ago, #{value.localtime.strftime("%Y-%m-%d %r")}"
+          "#{time_ago_in_words(value)} ago, #{value.localtime.strftime("%Y-%m-%d %r")}"
         else
           ""
         end

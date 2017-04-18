@@ -2,9 +2,6 @@ module Naf
   class ByHistoricalJobId < ::Partitioned::ByIntegerField
     self.abstract_class = true
 
-    # Protect from mass-assignment issue
-    attr_accessible :historical_job_id
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++

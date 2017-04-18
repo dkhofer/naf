@@ -1,13 +1,7 @@
 module Naf
   class ApplicationType < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :enabled,
-                    :script_type_name,
-                    :description,
-                    :invocation_method
-
-    SCRIPT_RUNNER = "#{Gem.ruby} #{Rails.root}/script/rails runner"
-    JOB_LOGGER = "#{Rails.root}/script/rails runner ::Process::Naf::Logger::JobLog.run"
+    SCRIPT_RUNNER = "#{Gem.ruby} #{Rails.root}/bin/rails runner"
+    JOB_LOGGER = "#{Rails.root}/bin/rails runner ::Process::Naf::Logger::JobLog.run"
 
     #---------------------
     # *** Associations ***

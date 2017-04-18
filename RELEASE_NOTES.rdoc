@@ -125,4 +125,4 @@ Features/Changes:
 * Fixed buttons to add Jobs to the Queue
 * Jobs index page is automatically refreshed
 
-=== Please find up-to-date information on Naf here: {Naf Wiki}[http://www.github.com/fiksu/naf/wiki]
+=== Please find up-to-date information on Naf here: {Naf Wiki}[http://www.github.com/jebbit/naf/wiki]

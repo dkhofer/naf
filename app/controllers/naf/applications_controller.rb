@@ -39,7 +39,7 @@ module Naf
     end
 
     def create
-      @application = Naf::Application.new(params[:application])
+      @application = Naf::Application.new(application_params)
       if @application.save
         redirect_to(@application, notice: "Application #{@application.title} was successfully created.")
       else
@@ -58,6 +58,21 @@ module Naf
       else
         render action: :edit
       end
+    end
+
+    private
+
+    def application_params
+      params.require(:application).permit(
+        :application_schedules,
+        :application_schedules_attributes,
+        :application_type_id,
+        :command,
+        :deleted,
+        :log_level,
+        :short_name,
+        :title,
+      )
     end
 
   end

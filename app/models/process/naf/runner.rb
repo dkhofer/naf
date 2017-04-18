@@ -80,9 +80,10 @@ module Process::Naf
         wind_down_runners
 
         # Create a machine runner, if it doesn't exist
-        machine_runner = ::Naf::MachineRunner.
-          find_or_create_by_machine_id_and_runner_cwd(machine_id: machine.id,
-                                                      runner_cwd: Dir.pwd)
+        machine_runner = ::Naf::MachineRunner.where(
+          machine_id: machine.id,
+          runner_cwd: Dir.pwd
+        ).first_or_create
         # Create an invocation for this runner
         @current_invocation = ::Naf::MachineRunnerInvocation.
           create!({ machine_runner_id: machine_runner.id,
@@ -113,7 +114,7 @@ module Process::Naf
       logger.debug "checking garbage collection configurations"
       unless @disable_gc_modifications
         # These configuration changes will help forked processes, not the runner
-        ENV['RUBY_HEAP_MIN_SLOTS'] = '500000'
+        ENV['RUBY_GC_HEAP_INIT_SLOTS'] = '500000'
         ENV['RUBY_HEAP_SLOTS_INCREMENT'] = '250000'
         ENV['RUBY_HEAP_SLOTS_GROWTH_FACTOR'] = '1'
         ENV['RUBY_GC_MALLOC_LIMIT'] = '50000000'

@@ -75,7 +75,7 @@ module Naf
     end
 
     def create
-      @historical_job = Naf::HistoricalJob.new(params[:historical_job])
+      @historical_job = Naf::HistoricalJob.new(historical_job_params)
       if params[:historical_job][:application_id] &&
         app = Naf::Application.find(params[:historical_job][:application_id])
 
@@ -143,7 +143,7 @@ module Naf
     def update
       respond_to do |format|
         @historical_job = Naf::HistoricalJob.find(params[:id])
-        if @historical_job.update_attributes(params[:historical_job])
+        if @historical_job.update_attributes(historical_job_params)
 
           ::Naf::HistoricalJob.lock_for_job_queue do
             if params[:historical_job][:request_to_terminate].present?
@@ -183,6 +183,29 @@ module Naf
     end
 
     private
+
+    def historical_job_params
+      params.require(:historical_job).permit(
+        :application_id,
+        :application_schedule_id,
+        :application_type_id,
+        :application_run_group_restriction_id,
+        :application_run_group_name,
+        :application_run_group_limit,
+        :command,
+        :exit_status,
+        :failed_to_start,
+        :log_level,
+        :machine_runner_invocation_id,
+        :marked_dead_by_machine_id,
+        :pid,
+        :priority,
+        :request_to_terminate,
+        :started_on_machine_id,
+        :state,
+        :termination_signal
+      )
+    end
 
     def add_urls(hash)
       job = ::Naf::HistoricalJob.find(hash[:id])

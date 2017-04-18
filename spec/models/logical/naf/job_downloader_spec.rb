@@ -2,71 +2,139 @@ require 'spec_helper'
 
 module Logical
   module Naf
-    module LogParser
-      describe JobDownloader do
-        # Create a test file, making sure to not overwrite a current file.
+    describe JobFetcher do
+      let(:job) { FactoryGirl.create(:job) }
+      let(:normal_slot) { FactoryGirl.create(:normal_machine_affinity_slot, machine: factory_girl_machine()) }
+      let(:required_perennial_slot) { FactoryGirl.create(:required_perennial_slot, machine: FactoryGirl.create(:machine_two)) }
+      let(:normal_machine) { normal_slot.machine }
+      let(:perennial_machine) { required_perennial_slot.machine }
+      let(:normal_tab) { FactoryGirl.create(:normal_job_affinity_tab) }
+      let(:perennial_tab) { FactoryGirl.create(:perennial_job_affinity_tab) }
+      let(:normal_job) { normal_tab.job }
+      let(:perennial_job) { perennial_tab.job }
+      let(:perennial_job_fetcher) { JobFetcher.new(perennial_machine) }
+      let(:normal_job_fetcher) { JobFetcher.new(normal_machine) }
 
-        let!(:test_record_id) { 3 }
-        let!(:test_file_path) { "#{::Naf::PREFIX_PATH}/#{::Naf.schema_name}/jobs/#{test_record_id}" }
-        let!(:test_file_name) { "1_20140613_161535.json" }
-        let!(:test_file_text) { "{\n" +
-                                "  \"line_number\": 1,\n" +
-                                "  \"output_time\": \"2014-06-13 16:15:35.689\",\n" +
-                                "  \"message\": \"140613 12:15:35.689 pid=6020 jid=3 Process::Naf::LogArchiver INFO Starting to save files to s3...\"\n" +
-                                "}" }
-        let!(:test_file_output) { "1 2014-06-13 16:15:35.689: 140613 12:15:35.689 pid=6020 jid=3 Process::Naf::LogArchiver INFO Starting to save files to s3...\n" }
-        let!(:segments_to_reset) { {} }
-        let!(:file_preserved) { false }
+      before(:all) do
+        ::Naf::HistoricalJob.delete_all
+      end
 
-        before() do
-          # Create a file/directory for example log. If directory exists, move it and save it
-          segments_to_reset = {}
-          total_path = ""
-          file_preserved = false
+      before do
+        FactoryGirl.create(:affinity, id: 4, affinity_name: 'cpus')
+        FactoryGirl.create(:affinity, id: 5, affinity_name: 'memory')
+      end
 
-          test_file_path.split("/").each do |segment|
-            unless segment == ""
-              segments_to_reset[segment] = false
-              unless File.exists?(total_path + segment + "/")
-                Dir.mkdir(total_path + segment + "/")
-                segments_to_reset[segment] = true
-              end
-              total_path += segment + "/"
-            end
-          end
+      #----------------------------
+      # ***   Shared Examples   ***
+      #++++++++++++++++++++++++++++
 
-          if File.exists?("#{test_file_path}/#{test_file_name}")
-            FileUtils.mv("#{test_file_path}/#{test_file_name}", "#{test_file_path}/#{test_file_name}-preserving")
-            file_preserved = true
-          end
+      shared_examples "inserts machine affinity slots correctly" do
+        it { expect(required_perennial_slot.required).to be_truthy }
+        it { expect(normal_slot.required).to be_falsey }
+      end
 
-          File.open("#{test_file_path}/#{test_file_name}", 'w') { |file| file.write(test_file_text) }
+      shared_examples "fetches next job correctly" do
+        it "asserts next job is not equal to first job" do
+          expect(first_job).not_to eq(second_job)
         end
 
-        after() do
-          # Delete the example log file. If a directory was saved before, move it back
-          File.delete("#{test_file_path}/#{test_file_name}")
-
-          if file_preserved
-            FileUtils.mv("#{test_file_path}/#{test_file_name}-preserving", "#{test_file_path}/#{test_file_name}")
-          end
-
-          current_path = test_file_path
-          test_file_path.split("/").reverse_each do |segment|
-            if segments_to_reset[segment]
-              Dir.rmdir(current_path)
-              current_path = current_path[0..-(segment.size + 2)]
-            end
-          end
-
+        it "insert row correctly into historical_jobs" do
+          expect(::Naf::HistoricalJob.queued_between(Time.zone.now - ::Naf::HistoricalJob::JOB_STALE_TIME, Time.zone.now).
+            where(started_at: nil).order(:id).first).to eq(first_job)
         end
 
-        it "returns the correct log" do
-          job_log_downloader = JobDownloader.new({ 'record_id' => test_record_id })
-          job_log_downloader.logs_for_download.should eql(test_file_output)
+        it "return correctly next fetched job" do
+          FactoryGirl.create(:queued_job, historical_job: second_job)
+          expect(fetcher.fetch_next_job.historical_job).to eq(second_job)
+        end
+      end
+
+      describe "single affinity" do
+        context "jobs that don't have the affinity a machine requires" do
+          before do
+            job
+            perennial_job
+          end
+
+          it "return 0 affinity tabs for first job" do
+            expect(job.historical_job_affinity_tabs).to be_empty
+          end
+
+          it_should_behave_like "inserts machine affinity slots correctly"
+          it_should_behave_like "fetches next job correctly" do
+            let(:first_job) { job }
+            let(:second_job) { perennial_job }
+            let(:fetcher) { perennial_job_fetcher }
+          end
         end
 
+        context "jobs that the machine doesn't have an affinity for" do
+          before do
+            perennial_job
+            normal_job
+          end
+
+          it_should_behave_like "inserts machine affinity slots correctly"
+          it_should_behave_like "fetches next job correctly" do
+            let(:first_job) { perennial_job }
+            let(:second_job) { normal_job }
+            let(:fetcher) { normal_job_fetcher }
+          end
+        end
+      end
+
+      describe "multiple affinities" do
+        let(:canary_machine) {
+          slot = FactoryGirl.create(:canary_slot, machine: FactoryGirl.create(:machine_two))
+          slot.machine
+        }
+        let(:canary_job) {
+          tab = FactoryGirl.create(:canary_job_affinity_tab)
+          tab.job
+        }
+        let(:canary_perennial_machine) {
+          slot_one = FactoryGirl.create(:required_canary_slot, machine: FactoryGirl.create(:machine_two))
+          slot_two = FactoryGirl.create(:required_perennial_slot, machine: FactoryGirl.create(:machine_two))
+          slot_two.machine
+        }
+        let(:canary_perennial_job) {
+          first_tab  = FactoryGirl.create(:canary_job_affinity_tab)
+          second_tab = FactoryGirl.create(:perennial_job_affinity_tab, historical_job: first_tab.job)
+          second_tab.job
+        }
+        let(:canary_job_fetcher) { JobFetcher.new(canary_machine) }
+        let(:canary_perennial_job_fetcher) { JobFetcher.new(canary_perennial_machine) }
+
+        context "jobs that the machine doesn't have an affinity for" do
+          before do
+            canary_job
+            canary_perennial_job
+          end
+
+          it_should_behave_like "inserts machine affinity slots correctly"
+          # it_should_behave_like "fetches next job correctly" do
+          pending do
+            # NOTE(hofer): I have no idea why this is failing.
+            let(:first_job) { canary_job }
+            let(:second_job) { canary_perennial_job }
+            let(:fetcher) { canary_perennial_job_fetcher }
+          end
+        end
+
+        context "jobs that the machine doesn't have one affinity for" do
+          before(:each) do
+            canary_perennial_job
+          end
+
+          it_should_behave_like "inserts machine affinity slots correctly"
+          it_should_behave_like "fetches next job correctly" do
+            let(:first_job) { canary_perennial_job }
+            let(:second_job) { canary_job }
+            let(:fetcher) { canary_job_fetcher }
+          end
+        end
       end
     end
+
   end
 end

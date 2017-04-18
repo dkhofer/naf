@@ -1,8 +1,5 @@
 module Naf
   class ApplicationRunGroupRestriction < NafBase
-    # Protect from mass-assignment issue
-    attr_accessible :application_run_group_restriction_name
-
     #---------------------
     # *** Associations ***
     #+++++++++++++++++++++
